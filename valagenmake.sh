@@ -21,6 +21,10 @@ function setup_variables_vala {
         exit 1 ;
     fi
 
+    for i in $(echo $VALAPACKAGES) ; do
+        VALAFLAGS="$VALAFLAGS --pkg $i"
+    done
+
     setup_variable "BINARY" ""
     setup_variable "CC" "gcc"
     setup_variable "CFLAGS" "-I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -lgobject-2.0 -lglib-2.0 $CFLAGS" h
@@ -60,9 +64,13 @@ function generate_vala {
         cfile='$(VALACDIR)/'$basename'.c'
         vapi='$(VALAVAPIDIR)/'$basename'.vapi'
         object='$(OBSDIR)/'$basename'.o'
+
+        echo -e "$vapi: $i">&3
+        echo -e '\t$(VALAC) --fast-vapi='$vapi' '$i>&3
+        echo -e ''>&3
     
         # depends on vala source
-        echo -e "$cfile: $i $cfiles">&3
+        echo -e "$cfile: $i">&3
         echo -e '\t$(VALAC) $(VALAFLAGS) --vapidir $(VALAVAPIDIR) --vapi '$vapi' -H '$header' -C '$i' '$vapis>&3
         echo -e '\t'mv $noext'.c '$cfile>&3
         echo -e ''>&3
@@ -75,7 +83,10 @@ function generate_vala {
         objects="$objects $object"
         vapis="$vapis $vapi"
     done
-    echo -e 'build: '$objects''>&3
+    echo -e "vapis: $vapis\n">&3
+    echo -e "cfiles: vapis | $cfiles\n">&3
+    echo -e "objects: cfiles | $objects\n">&3
+    echo -e "build: objects">&3
     echo -e '\t$(CC) $(LDFLAGS) -o $(BINARY) '$objects>&3
     echo -e ''>&3
 
@@ -86,10 +97,15 @@ clean:
 spotless: clean
 	rm -rf $(VALAHEADERDIR) $(VALAVAPIDIR)
 '>&3
+
+    echo '
+genmake:
+	./valagenmake.sh
+'>&3
 }
 
 if [ -f genconfig ] ; then
-    source genconfig
+    source ./genconfig
 fi
 
 rm -f Makefile

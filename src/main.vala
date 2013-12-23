@@ -10,7 +10,7 @@ public class Main {
         SDLApplication sdlapp = new SDLApplication() ;
         var app = new Application() ;
         sdlapp.setDrawable( app ); 
-        sdlapp.setEventHandler( app );
+        sdlapp.addEventHandler( app );
         sdlapp.run() ;
 
         return 0 ;

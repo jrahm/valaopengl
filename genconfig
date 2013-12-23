@@ -1,14 +1,17 @@
 #!/bin/bash
-BINARY=opengltest
+BINARY=hello
 MAKE_TYPE=vala
 SOURCEDIR=src
 SOURCES='
+    src/GLHelper.vala
     src/EventHandler.vala
     src/GLDrawable.vala
     src/SDLApplication.vala
     src/App.vala
     src/main.vala
 '
-VALAFLAGS='--vapidir src/vapi/ --pkg sdl --pkg gl --pkg glu'
-CFLAGS="-I /usr/include/SDL"
-LDFLAGS="-lSDL -lGL -lGLU"
+
+VALAPACKAGES='sdl gl glu gee-0.8'
+VALAFLAGS='--vapidir src/vapi/'
+CFLAGS="-w -I /usr/include/SDL -I /usr/include/gee-0.8"
+LDFLAGS="-lSDL -lGL -lGLU -lgee-0.8"
