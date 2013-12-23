@@ -1,0 +1,10 @@
+function! Strip(input_string)
+    return substitute(a:input_string, '.$', '')
+endfunction
+
+function! SetupVala()
+    let cmd='/usr/bin/find \( -iname *.vapi ! -iname '.expand('%:t:r').'.vapi \) | sed ":a;N;$!ba;s/\n/ /g"'
+    let g:syntastic_vala_includes='$('.cmd.')'
+endfu
+
+au BufEnter *.vala :call SetupVala()
